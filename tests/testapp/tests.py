@@ -347,7 +347,7 @@ class RedisCacheTests(TestCase):
     def test_string_float_caching(self):
         self.cache.set('a', '1.1')
         a = self.cache.get('a')
-        self.assertEqual(a, 1.1)
+        self.assertEqual(a, '1.1')
 
     def test_multiple_connection_pool_connections(self):
         pool._connection_pools = {}
@@ -362,6 +362,10 @@ class RedisCacheTests(TestCase):
         options['DB'] = 15
         get_cache('redis_cache.RedisCache', LOCATION="127.0.0.1:6380", OPTIONS=options)
         self.assertEqual(len(pool._connection_pools), 2)
+
+    def test_setting_string_integer_retrieves_string(self):
+        self.assertTrue(self.cache.set("foo", "1"))
+        self.assertEqual(self.cache.get("foo"), "1")
 
     def test_delete_pattern(self):
         data = {
